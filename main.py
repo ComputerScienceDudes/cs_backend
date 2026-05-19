@@ -152,6 +152,62 @@ def index():
     return render_template("index.html")
 
 
+@app.route('/api/carousel')
+def api_carousel():
+    """Public carousel — shows all submitted deeds that include a photo, newest first.
+    Falls back to static test images when no photo submissions exist yet."""
+    from model.submissions import Submissions
+    from model.submission_images import submission_image_base64_decode
+
+    # Pull every submission that has an image, most recent first
+    submissions_with_images = (
+        Submissions.query
+        .filter(Submissions.image != None)
+        .order_by(Submissions.submitted_at.desc())
+        .all()
+    )
+
+    result = []
+    for sub in submissions_with_images:
+        img_b64 = submission_image_base64_decode(sub.image)
+        if not img_b64:
+            continue
+        if isinstance(sub.content, dict):
+            title       = sub.content.get('title') or sub.content.get('deed_title') or ''
+            description = sub.content.get('description') or sub.content.get('deed_description') or ''
+        else:
+            title       = ''
+            description = sub.content or ''
+        result.append({
+            'title':       title,
+            'description': description,
+            'category':    sub.category or 'Deed',
+            'image':       img_b64,
+            'image_url':   None,
+        })
+
+    # Fall back to static test images until real submissions exist
+    if not result:
+        result = [
+            {
+                'title': 'Community Impact',
+                'category': 'community',
+                'image': None,
+                'image_url': '/static/assets/carousel/deed1.jpg',
+                'description': 'Making a difference one deed at a time.',
+            },
+            {
+                'title': 'Youth Wellness',
+                'category': 'volunteer',
+                'image': None,
+                'image_url': '/static/assets/carousel/deed2.jpg',
+                'description': 'Empowering the next generation.',
+            },
+        ]
+
+    return jsonify(result)
+
+
 @app.route('/api/dashboard/stats')
 @login_required
 def dashboard_stats():
@@ -243,6 +299,31 @@ def sections():
 def submissions_table():
     submissions = Submissions.query.all()
     return render_template("submissions_table.html", submissions=submissions)
+
+@app.route('/submissions/get/<int:id>')
+@login_required
+def get_submission(id):
+    from model.submission_images import submission_image_base64_decode
+    from flask import jsonify as _jsonify
+    sub = Submissions.query.get(id)
+    if not sub:
+        return _jsonify({'message': 'Not found'}), 404
+    data = sub.read()
+    if sub.image:
+        data['image'] = submission_image_base64_decode(sub.image)
+    return _jsonify(data)
+
+@app.route('/submissions/delete/<int:id>', methods=['DELETE'])
+@login_required
+def delete_submission_admin(id):
+    from flask import jsonify as _jsonify
+    if current_user.role != 'Admin':
+        return _jsonify({'message': 'Forbidden'}), 403
+    sub = Submissions.query.get(id)
+    if not sub:
+        return _jsonify({'message': 'Not found'}), 404
+    sub.delete()
+    return _jsonify({'message': 'Deleted'})
 
 @app.route('/persona/')
 @login_required

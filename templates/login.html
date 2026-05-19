@@ -2,166 +2,175 @@
 {% set project = "Login" %}
 
 {% block style %}
-    <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: linear-gradient(135deg, var(--mocha-white) 0%, #F2EDE9 100%);
-        }
+<style>
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #1B4332 0%, #0d2b1f 100%);
+    font-family: 'Space Grotesk', 'Segoe UI', sans-serif;
+  }
 
-        .login-container {
-            width: 100%;
-            max-width: 400px;
-            padding: 2rem;
-        }
+  .login-container {
+    width: 100%;
+    max-width: 420px;
+    padding: 2rem;
+  }
 
-        .login-card {
-            background: var(--light-text);
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            padding: 2.5rem 2rem;
-        }
+  .login-card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+    padding: 2.75rem 2.25rem;
+  }
 
-        .login-header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
+  .login-header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
 
-        .login-header img {
-            width: 60px;
-            height: 60px;
-            margin-bottom: 1rem;
-        }
+  .login-header img {
+    width: 72px;
+    height: 72px;
+    margin-bottom: 0.75rem;
+    border-radius: 50%;
+    border: 3px solid #1B4332;
+  }
 
-        .login-header h1 {
-            font-size: 1.75rem;
-            font-weight: 700;
-            color: var(--dark-text);
-            margin: 0;
-        }
+  .login-header h1 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #1B4332;
+    margin: 0 0 0.25rem;
+    letter-spacing: -0.5px;
+  }
 
-        .login-form {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-        }
+  .login-header p {
+    font-size: 0.9rem;
+    color: #6b7280;
+    margin: 0;
+  }
 
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
+  .login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
 
-        .form-group label {
-            font-weight: 600;
-            color: var(--dark-text);
-            font-size: 0.95rem;
-        }
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
 
-        .form-group input[type="text"],
-        .form-group input[type="password"] {
-            padding: 0.75rem 1rem;
-            border: 2px solid var(--border-color);
-            border-radius: 6px;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            background-color: var(--mocha-white);
-            color: var(--dark-text);
-        }
+  .form-group label {
+    font-weight: 600;
+    color: #1B4332;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
 
-        .form-group input[type="text"]:focus,
-        .form-group input[type="password"]:focus {
-            outline: none;
-            border-color: var(--soft-red);
-            box-shadow: 0 0 0 3px rgba(200, 86, 86, 0.1);
-        }
+  .form-group input[type="text"],
+  .form-group input[type="password"] {
+    padding: 0.75rem 1rem;
+    border: 2px solid #d1e7da;
+    border-radius: 8px;
+    font-size: 1rem;
+    color: #1a1a1a;
+    background: #f9fafb;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+  }
 
-        .alert-error {
-            background-color: #FDE8E8;
-            color: #C85656;
-            padding: 1rem;
-            border-radius: 6px;
-            border-left: 4px solid #C85656;
-            margin-bottom: 1rem;
-            font-size: 0.95rem;
-        }
+  .form-group input:focus {
+    border-color: #1B4332;
+    box-shadow: 0 0 0 3px rgba(27, 67, 50, 0.12);
+    background: #fff;
+  }
 
-        .alert-success {
-            background-color: #E8F5E9;
-            color: #4CAF50;
-            padding: 1rem;
-            border-radius: 6px;
-            border-left: 4px solid #4CAF50;
-            margin-bottom: 1rem;
-            font-size: 0.95rem;
-        }
+  .alert-error {
+    background: #fff3f0;
+    color: #c0392b;
+    padding: 0.85rem 1rem;
+    border-radius: 8px;
+    border-left: 4px solid #e74c3c;
+    font-size: 0.9rem;
+  }
 
-        .submit-btn {
-            background-color: var(--soft-red);
-            color: var(--light-text);
-            padding: 0.85rem;
-            border: none;
-            border-radius: 6px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 0.5rem;
-        }
+  .submit-btn {
+    background: #FF6B35;
+    color: #fff;
+    padding: 0.9rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    margin-top: 0.25rem;
+  }
 
-        .submit-btn:hover {
-            background-color: var(--hover-red);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(200, 86, 86, 0.3);
-        }
+  .submit-btn:hover {
+    background: #e55a25;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+  }
 
-        .submit-btn:active {
-            transform: translateY(0);
-        }
+  .submit-btn:active { transform: translateY(0); }
 
-        .hidden-input {
-            display: none;
-        }
-    </style>
+  .login-footer {
+    text-align: center;
+    margin-top: 1.5rem;
+    font-size: 0.82rem;
+    color: #9ca3af;
+  }
+
+  .login-footer a {
+    color: #1B4332;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .hidden-input { display: none; }
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
 {% endblock %}
 
 {% block body %}
-    <div class="login-container">
-        <div class="login-card">
-            <div class="login-header">
-                <img src="{{ url_for('static', filename='assets/dad.png') }}" alt="Logo">
-                <h1>DAD</h1>
-            </div>
-
-            <form name="f" action="{{ url_for('login') }}" method="POST" class="login-form">
-                {% if error %}
-                    <div class="alert-error">
-                        ⚠️ Invalid username and password.
-                    </div>
-                {% endif %}
-                
-                {% if logout %}
-                    <div class="alert-success">
-                        ✓ You have been logged out.
-                    </div>
-                {% endif %}
-
-                <div class="form-group">
-                    <label for="username">User ID</label>
-                    <input id="username" name="username" type="text" required placeholder="Enter your user ID">
-                </div>
-
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input id="password" name="password" type="password" required placeholder="Enter your password">
-                </div>
-
-                <input type="hidden" name="next" value="{{ next }}" class="hidden-input">
-                
-                <button type="submit" class="submit-btn">Login</button>
-            </form>
-        </div>
+<div class="login-container">
+  <div class="login-card">
+    <div class="login-header">
+      <img src="{{ url_for('static', filename='assets/dad.png') }}" alt="D.A.D. Logo">
+      <h1>D.A.D. Portal</h1>
+      <p>Doing Exceptional Deeds</p>
     </div>
+
+    <form name="f" action="{{ url_for('login') }}" method="POST" class="login-form">
+      {% if error %}
+      <div class="alert-error">Invalid username or password. Please try again.</div>
+      {% endif %}
+
+      <div class="form-group">
+        <label for="username">User ID</label>
+        <input id="username" name="username" type="text" required placeholder="Enter your user ID">
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" required placeholder="Enter your password">
+      </div>
+
+      <input type="hidden" name="next" value="{{ next }}" class="hidden-input">
+      <button type="submit" class="submit-btn">Sign In</button>
+    </form>
+
+    <div class="login-footer">
+      A 501(c)(3) Nonprofit &nbsp;|&nbsp; <a href="https://www.doingexceptionaldeeds.org" target="_blank">doingexceptionaldeeds.org</a>
+    </div>
+  </div>
+</div>
 {% endblock %}

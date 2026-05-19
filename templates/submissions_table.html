@@ -248,106 +248,88 @@
         </div>
     </div>
 
-    <script>
-        console.log("=== Submissions Table Script Loading ===");
-        console.log("jQuery version:", typeof jQuery !== 'undefined' ? jQuery.fn.jquery : 'NOT LOADED');
-        
-        // Configure jQuery AJAX to include credentials (cookies) for session auth
-        $.ajaxSetup({
-            xhrFields: {
-                withCredentials: true
+<script>
+    $.ajaxSetup({ xhrFields: { withCredentials: true } });
+
+    // View button handler
+    $(document).on('click', 'button.view-btn', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        const submissionId = $(this).attr('data-id');
+
+        const modal = $(`
+            <div class="viewModal" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.55);z-index:1000;display:flex;align-items:center;justify-content:center;">
+              <div id="view-modal-inner" style="background:#fff;border-radius:12px;padding:2rem;max-width:560px;width:92%;box-shadow:0 16px 48px rgba(0,0,0,0.25);max-height:90vh;overflow-y:auto;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;border-bottom:2px solid #1B4332;padding-bottom:0.75rem;">
+                  <h2 style="margin:0;color:#1B4332;font-size:1.2rem;">Submission #${submissionId}</h2>
+                  <button class="modal-close" style="background:none;border:none;font-size:1.5rem;cursor:pointer;color:#666;">×</button>
+                </div>
+                <div id="modal-body" style="color:#444;font-size:0.95rem;">Loading…</div>
+                <div style="margin-top:1.5rem;text-align:right;">
+                  <button class="modal-close" style="padding:0.6rem 1.4rem;background:#FF6B35;color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:600;">Close</button>
+                </div>
+              </div>
+            </div>`);
+        $('body').append(modal);
+        modal.on('click', '.modal-close', function() { modal.remove(); });
+        modal.on('click', function(e) { if (e.target === this) modal.remove(); });
+
+        $.ajax({
+            url: '/submissions/get/' + submissionId,
+            type: 'GET',
+            xhrFields: { withCredentials: true },
+            success: function(data) {
+                const content = typeof data.content === 'object' ? data.content : { description: data.content };
+                const title = content.title || content.deed_title || '—';
+                const description = content.description || content.deed_description || data.content || '—';
+                const imgHtml = data.image
+                    ? `<img src="data:image/jpeg;base64,${data.image}" style="width:100%;max-height:280px;object-fit:cover;border-radius:8px;margin-top:1rem;">`
+                    : '<p style="color:#aaa;font-style:italic;margin-top:0.5rem;">No photo attached.</p>';
+                $('#modal-body').html(`
+                    <table style="width:100%;border-collapse:collapse;margin-bottom:0.5rem;">
+                      <tr><td style="padding:0.4rem 0;font-weight:700;width:110px;color:#1B4332;">User</td><td style="padding:0.4rem 0;">${data.user_name || '—'}</td></tr>
+                      <tr><td style="padding:0.4rem 0;font-weight:700;color:#1B4332;">Category</td><td style="padding:0.4rem 0;"><span style="background:rgba(27,67,50,.1);color:#1B4332;padding:2px 10px;border-radius:12px;font-size:0.85rem;">${data.category || '—'}</span></td></tr>
+                      <tr><td style="padding:0.4rem 0;font-weight:700;color:#1B4332;">Title</td><td style="padding:0.4rem 0;">${title}</td></tr>
+                      <tr><td style="padding:0.4rem 0;font-weight:700;color:#1B4332;">Description</td><td style="padding:0.4rem 0;">${description}</td></tr>
+                      <tr><td style="padding:0.4rem 0;font-weight:700;color:#1B4332;">Submitted</td><td style="padding:0.4rem 0;">${data.submitted_at || '—'}</td></tr>
+                    </table>
+                    <div style="border-top:1px solid #eee;padding-top:0.75rem;"><strong style="color:#1B4332;">Photo</strong>${imgHtml}</div>
+                `);
+            },
+            error: function(xhr) {
+                $('#modal-body').html('<p style="color:#c0392b;">Failed to load submission. ' + (xhr.responseJSON?.message || '') + '</p>');
             }
         });
+    });
 
-        // Attach event handlers to document (will work with dynamically added elements)
-        $(document).on('click', 'button.view-btn', function(e) {
-            e.preventDefault();
-            console.log("=== VIEW BUTTON CLICKED ===");
-            const submissionId = $(this).data('id');
-            console.log("Submission ID:", submissionId);
-            
-            // Fetch full submission data including image and content
+    // Delete button handler
+    $(document).on('click', 'button.delete-btn', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        const submissionId = $(this).attr('data-id');
+        if(confirm('Are you sure you want to delete this submission?')) {
             $.ajax({
-                url: '/submit/submission/' + submissionId,
-                type: 'GET',
+                url: '/submissions/delete/' + submissionId,
+                type: 'DELETE',
+                xhrFields: { withCredentials: true },
                 success: function(data) {
-                    console.log("Submission data:", data);
-                    const user = data.user_name || 'Unknown';
-                    const category = data.category || 'General';
-                    const date = data.submitted_at ? new Date(data.submitted_at).toLocaleString() : 'N/A';
-                    const description = data.content || 'No description provided';
-                    const image = data.image ? 'data:image/jpeg;base64,' + data.image : null;
-                    
-                    let imageHtml = '';
-                    if(image) {
-                        imageHtml = '<div style="margin:1rem 0; text-align:center;"><img src="' + image + '" style="max-width:100%; max-height:300px; border-radius:8px; object-fit:cover;"></div>';
-                    }
-                    
-                    const modal = $('<div class="viewModal" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; display:flex; align-items:center; justify-content:center;"><div style="background:white; border-radius:12px; padding:2rem; max-width:600px; width:90%; max-height:90vh; overflow-y:auto; box-shadow:0 10px 40px rgba(0,0,0,0.3);"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;"><h2 style="margin:0; color:var(--dark-text);">Submission #' + submissionId + '</h2><button class="modal-close" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">×</button></div><p><strong>User:</strong> ' + user + '</p><p><strong>Category:</strong> ' + category + '</p><p><strong>Date:</strong> ' + date + '</p>' + imageHtml + '<div style="margin:1rem 0;"><strong>Description:</strong><p style="background:#f5f1ee; padding:1rem; border-radius:6px; margin-top:0.5rem;">' + description.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</p></div><div style="margin-top:2rem; text-align:right;"><button class="modal-close" style="padding:0.6rem 1.2rem; background:var(--soft-red); color:white; border:none; border-radius:6px; cursor:pointer;">Close</button></div></div></div>');
-                    $('body').append(modal);
-                    
-                    modal.on('click', '.modal-close', function() {
-                        modal.remove();
-                    });
-                    modal.on('click', function(e) {
-                        if(e.target === this) modal.remove();
-                    });
+                    $('#submission-' + submissionId).fadeOut(function() { $(this).remove(); });
                 },
                 error: function(xhr) {
-                    console.log("Error fetching submission:", xhr.status);
-                    alert('Error loading submission details');
+                    alert('Error deleting submission: ' + (xhr.responseJSON?.message || 'Unknown error'));
                 }
             });
-        });
+        }
+    });
 
-        // Delete button handler
-        $(document).on('click', 'button.delete-btn', function(e) {
-            e.preventDefault();
-            console.log("=== DELETE BUTTON CLICKED ===");
-            const submissionId = $(this).data('id');
-            console.log("Delete submission ID:", submissionId);
-            if(confirm('Are you sure you want to delete this submission?')) {
-                $.ajax({
-                    url: '/submit/delete/' + submissionId,
-                    type: 'DELETE',
-                    success: function(data) {
-                        console.log("Delete successful");
-                        $('tr#submission-' + submissionId).fadeOut(function() { $(this).remove(); });
-                        alert('Submission deleted successfully');
-                    },
-                    error: function(xhr) {
-                        console.log("Delete error:", xhr.status, xhr.responseText);
-                        alert('Error deleting submission: ' + (xhr.responseJSON?.message || 'Unknown error'));
-                    }
-                });
-            }
-        });
-
-        $(document).ready(function () {
-            console.log("Document ready");
-            
-            // Check if table is empty (first row has colspan = no submissions message)
-            const firstRow = $("#submissionsTable tbody tr").first();
-            const hasColspan = firstRow.find('td[colspan]').length > 0;
-            console.log("Table has colspan (empty):", hasColspan);
-            
-            if(!hasColspan) {
-                console.log("Initializing DataTables with submission data");
-                try {
-                    const table = $("#submissionsTable").DataTable({
-                        "paging": false,
-                        "ordering": true,
-                        "info": false
-                    });
-                    console.log("DataTables initialized successfully");
-                } catch(err) {
-                    console.error("DataTables initialization error:", err);
-                }
-            } else {
-                console.log("Table is empty, skipping DataTables initialization");
-            }
-        });
-        
-        console.log("=== Script Initialization Complete ===");
-    </script>
+    $(document).ready(function () {
+        const firstRow = $("#submissionsTable tbody tr").first();
+        const hasColspan = firstRow.find('td[colspan]').length > 0;
+        if (!hasColspan) {
+            try {
+                $("#submissionsTable").DataTable({ paging: false, ordering: true, info: false });
+            } catch(err) {}
+        }
+    });
+</script>
 {% endblock %}
