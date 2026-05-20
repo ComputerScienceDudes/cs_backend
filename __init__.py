@@ -61,7 +61,7 @@ if not is_production:
        app,
        supports_credentials=True,
        origins=cors_origins,
-       methods=["GET", "POST", "PUT", "OPTIONS"]
+       methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"]
     )
 
 

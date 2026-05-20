@@ -28,31 +28,30 @@ def set_auth_cookie(response, token_value):
         token_value: JWT token string to store in cookie
     """
     is_production = os.environ.get('IS_PRODUCTION', 'false').lower() == 'true'
-    cookie_domain = os.environ.get('COOKIE_DOMAIN')  # User can override domain via env var
-    
+    cookie_domain = os.environ.get('COOKIE_DOMAIN')
+    is_clearing = not token_value  # Empty value = logout, expire immediately
+
     if is_production:
-        # Production: HTTPS enabled, allow cross-origin via SameSite=None
         response.set_cookie(
             current_app.config["JWT_TOKEN_NAME"],
             token_value,
-            max_age=43200,  # 12 hours in seconds
+            max_age=0 if is_clearing else 43200,
             secure=True,
             httponly=True,
             path='/',
             samesite='None',
-            domain=cookie_domain  # None = current hostname, or specify for cross-domain
+            domain=cookie_domain
         )
     else:
-        # Development: HTTP, use Lax SameSite
         response.set_cookie(
             current_app.config["JWT_TOKEN_NAME"],
             token_value,
-            max_age=43200,  # 12 hours in seconds
+            max_age=0 if is_clearing else 43200,
             secure=False,
-            httponly=False,  # Set to True for more security if JS access not needed
+            httponly=False,
             path='/',
             samesite='Lax',
-            domain=cookie_domain  # None for same-origin (localhost)
+            domain=cookie_domain
         )
 
 class UserAPI:        

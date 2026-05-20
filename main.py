@@ -46,6 +46,7 @@ from model.persona import Persona, initPersonas, initPersonaUsers
 from model.post import Post, init_posts
 from model.microblog import MicroBlog, Topic, initMicroblogs
 from model.submissions import Submissions
+from model.carousel import Carousel
 from model.chat import initChatMessages  # Import chat model initializer
 from hacks.jokes import initJokes 
 # from model.announcement import Announcement ##temporary revert
@@ -140,6 +141,17 @@ def logout():
     logout_user()
     return redirect(url_for('index'))
 
+@app.route('/api/signout')
+def api_signout():
+    from flask import make_response as _make_response
+    logout_user()  # clear Flask-Login session
+    is_production = os.environ.get('IS_PRODUCTION', 'false').lower() == 'true'
+    redirect_url = 'https://pages.opencodingsociety.com/' if is_production else 'http://localhost:4500/'
+    resp = _make_response(redirect(redirect_url))
+    resp.set_cookie(app.config['JWT_TOKEN_NAME'], '', max_age=0, path='/',
+        secure=is_production, samesite='None' if is_production else 'Lax')
+    return resp
+
 @app.errorhandler(404)  # catch for URL not found
 def page_not_found(e):
     # note that we set the 404 status explicitly
@@ -154,21 +166,15 @@ def index():
 
 @app.route('/api/carousel')
 def api_carousel():
-    """Public carousel — shows all submitted deeds that include a photo, newest first.
-    Falls back to static test images when no photo submissions exist yet."""
-    from model.submissions import Submissions
+    """Public carousel — returns only admin-curated submissions."""
     from model.submission_images import submission_image_base64_decode
 
-    # Pull every submission that has an image, most recent first
-    submissions_with_images = (
-        Submissions.query
-        .filter(Submissions.image != None)
-        .order_by(Submissions.submitted_at.desc())
-        .all()
-    )
-
+    carousel_items = Carousel.get_all_ordered()
     result = []
-    for sub in submissions_with_images:
+    for item in carousel_items:
+        sub = item.submission
+        if not sub or not sub.image:
+            continue
         img_b64 = submission_image_base64_decode(sub.image)
         if not img_b64:
             continue
@@ -186,7 +192,6 @@ def api_carousel():
             'image_url':   None,
         })
 
-    # Fall back to static test images until real submissions exist
     if not result:
         result = [
             {
@@ -298,7 +303,8 @@ def sections():
 @login_required
 def submissions_table():
     submissions = Submissions.query.all()
-    return render_template("submissions_table.html", submissions=submissions)
+    carousel_ids = {row.submission_id for row in Carousel.query.all()}
+    return render_template("submissions_table.html", submissions=submissions, carousel_ids=carousel_ids)
 
 @app.route('/submissions/get/<int:id>')
 @login_required
@@ -324,6 +330,38 @@ def delete_submission_admin(id):
         return _jsonify({'message': 'Not found'}), 404
     sub.delete()
     return _jsonify({'message': 'Deleted'})
+
+@app.route('/submissions/carousel/add/<int:id>', methods=['POST'])
+@login_required
+def carousel_add(id):
+    from flask import jsonify as _jsonify
+    if current_user.role != 'Admin':
+        return _jsonify({'message': 'Forbidden'}), 403
+    sub = Submissions.query.get(id)
+    if not sub:
+        return _jsonify({'message': 'Not found'}), 404
+    if not sub.image:
+        return _jsonify({'message': 'Submission has no photo'}), 400
+    if Carousel.get_by_submission_id(id):
+        return _jsonify({'message': 'Already in carousel'}), 409
+    item = Carousel(submission_id=id, position=Carousel.get_count())
+    item.create()
+    return _jsonify({'message': 'Added to carousel'})
+
+@app.route('/submissions/carousel/remove/<int:id>', methods=['DELETE'])
+@login_required
+def carousel_remove(id):
+    from flask import jsonify as _jsonify
+    if current_user.role != 'Admin':
+        return _jsonify({'message': 'Forbidden'}), 403
+    item = Carousel.get_by_submission_id(id)
+    if not item:
+        return _jsonify({'message': 'Not in carousel'}), 404
+    item.delete()
+    remaining = Carousel.get_all_ordered()
+    for idx, r in enumerate(remaining):
+        r.update(position=idx)
+    return _jsonify({'message': 'Removed from carousel'})
 
 @app.route('/persona/')
 @login_required

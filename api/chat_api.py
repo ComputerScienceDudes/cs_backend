@@ -62,26 +62,24 @@ class Send(Resource):
             return {'success': False, 'error': 'Message cannot be empty'}, 400
 
         if not is_admin(user):
+            # Send to one admin — Conversations/Messages queries span all admins
             admin = find_admin()
             if not admin:
                 return {'success': False, 'error': 'No admin available'}, 404
-            receiver_uid = admin._uid
+            msg = ChatMessage(sender_uid=user._uid, receiver_uid=admin._uid, message=message_text)
+            db.session.add(msg)
+            db.session.commit()
+            return {'success': True, 'message': msg.to_dict()}, 201
         else:
             if not receiver_uid:
                 return {'success': False, 'error': 'receiver_uid required'}, 400
             receiver = User.query.filter_by(_uid=receiver_uid).first()
             if not receiver:
                 return {'success': False, 'error': 'User not found'}, 404
-
-        msg = ChatMessage(
-            sender_uid=user._uid,
-            receiver_uid=receiver_uid,
-            message=message_text
-        )
-        db.session.add(msg)
-        db.session.commit()
-
-        return {'success': True, 'message': msg.to_dict()}, 201
+            msg = ChatMessage(sender_uid=user._uid, receiver_uid=receiver_uid, message=message_text)
+            db.session.add(msg)
+            db.session.commit()
+            return {'success': True, 'message': msg.to_dict()}, 201
 
 
 class Messages(Resource):
@@ -93,26 +91,35 @@ class Messages(Resource):
         other_uid = request.args.get('with')
 
         if not is_admin(user):
-            admin = find_admin()
-            if not admin:
+            # Show messages between this user and ANY admin
+            admin_uids = set(
+                row[0] for row in db.session.query(User._uid).filter(User._role == 'Admin').all()
+            )
+            if not admin_uids:
                 return {'success': False, 'error': 'No admin found'}, 404
-            other_uid = admin._uid
+            messages = ChatMessage.query.filter(
+                db.or_(
+                    db.and_(ChatMessage.sender_uid == user._uid,
+                            ChatMessage.receiver_uid.in_(admin_uids)),
+                    db.and_(ChatMessage.sender_uid.in_(admin_uids),
+                            ChatMessage.receiver_uid == user._uid)
+                )
+            ).order_by(ChatMessage.timestamp.asc()).all()
         else:
             if not other_uid:
                 return {'success': False, 'error': 'Provide ?with=uid'}, 400
-
-        messages = ChatMessage.query.filter(
-            db.or_(
-                db.and_(
-                    ChatMessage.sender_uid == user._uid,
-                    ChatMessage.receiver_uid == other_uid
-                ),
-                db.and_(
-                    ChatMessage.sender_uid == other_uid,
-                    ChatMessage.receiver_uid == user._uid
-                )
+            # Admin sees full thread: messages between the user and ANY admin
+            admin_uids = set(
+                row[0] for row in db.session.query(User._uid).filter(User._role == 'Admin').all()
             )
-        ).order_by(ChatMessage.timestamp.asc()).all()
+            messages = ChatMessage.query.filter(
+                db.or_(
+                    db.and_(ChatMessage.sender_uid == other_uid,
+                            ChatMessage.receiver_uid.in_(admin_uids)),
+                    db.and_(ChatMessage.sender_uid.in_(admin_uids),
+                            ChatMessage.receiver_uid == other_uid)
+                )
+            ).order_by(ChatMessage.timestamp.asc()).all()
 
         for m in messages:
             if m.receiver_uid == user._uid and not m.is_read:
@@ -134,11 +141,17 @@ class Conversations(Resource):
         if not is_admin(user):
             return {'success': False, 'error': 'Admin only'}, 403
 
+        # Collect all admin UIDs so any admin can see all user conversations
+        admin_uids = set(
+            row[0] for row in db.session.query(User._uid).filter(User._role == 'Admin').all()
+        )
+
+        # Find all non-admin users who have messaged any admin, or been messaged by any admin
         sent = db.session.query(ChatMessage.sender_uid).filter(
-            ChatMessage.receiver_uid == user._uid
+            ChatMessage.receiver_uid.in_(admin_uids)
         ).distinct()
         received = db.session.query(ChatMessage.receiver_uid).filter(
-            ChatMessage.sender_uid == user._uid
+            ChatMessage.sender_uid.in_(admin_uids)
         ).distinct()
 
         uids = set()
@@ -146,7 +159,7 @@ class Conversations(Resource):
             uids.add(row[0])
         for row in received:
             uids.add(row[0])
-        uids.discard(user._uid)
+        uids -= admin_uids  # remove admin UIDs, keep only regular users
 
         users = []
         for uid in uids:

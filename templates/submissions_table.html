@@ -160,6 +160,26 @@
             background-color: #EF5350;
         }
 
+        .btn-carousel-add {
+            background-color: #f0f4f2;
+            color: #1B4332;
+            border: 1px solid #1B4332;
+        }
+
+        .btn-carousel-add:hover {
+            background-color: #1B4332;
+            color: #fff;
+        }
+
+        .btn-carousel-remove {
+            background-color: #1B4332;
+            color: #fff;
+        }
+
+        .btn-carousel-remove:hover {
+            background-color: #163828;
+        }
+
         .dataTables_wrapper {
             padding: 1.5rem;
         }
@@ -230,6 +250,13 @@
                                 <div class="btn-group">
                                     <button class="btn btn-view view-btn" data-id="{{ submission.id }}">View</button>
                                     {% if current_user.role == 'Admin' %}
+                                        {% if submission.image %}
+                                            {% if submission.id in carousel_ids %}
+                                            <button class="btn btn-carousel-remove carousel-btn" data-id="{{ submission.id }}" data-in-carousel="1">★ Carousel</button>
+                                            {% else %}
+                                            <button class="btn btn-carousel-add carousel-btn" data-id="{{ submission.id }}" data-in-carousel="0">☆ Carousel</button>
+                                            {% endif %}
+                                        {% endif %}
                                     <button class="btn btn-delete delete-btn" data-id="{{ submission.id }}">Delete</button>
                                     {% endif %}
                                 </div>
@@ -300,6 +327,43 @@
                 $('#modal-body').html('<p style="color:#c0392b;">Failed to load submission. ' + (xhr.responseJSON?.message || '') + '</p>');
             }
         });
+    });
+
+    // Carousel toggle handler
+    $(document).on('click', 'button.carousel-btn', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        const btn = $(this);
+        const submissionId = btn.attr('data-id');
+        const inCarousel = btn.attr('data-in-carousel') === '1';
+
+        if (inCarousel) {
+            $.ajax({
+                url: '/submissions/carousel/remove/' + submissionId,
+                type: 'DELETE',
+                xhrFields: { withCredentials: true },
+                success: function() {
+                    btn.removeClass('btn-carousel-remove').addClass('btn-carousel-add')
+                       .attr('data-in-carousel', '0').text('☆ Carousel');
+                },
+                error: function(xhr) {
+                    alert('Error: ' + (xhr.responseJSON?.message || 'Unknown error'));
+                }
+            });
+        } else {
+            $.ajax({
+                url: '/submissions/carousel/add/' + submissionId,
+                type: 'POST',
+                xhrFields: { withCredentials: true },
+                success: function() {
+                    btn.removeClass('btn-carousel-add').addClass('btn-carousel-remove')
+                       .attr('data-in-carousel', '1').text('★ Carousel');
+                },
+                error: function(xhr) {
+                    alert('Error: ' + (xhr.responseJSON?.message || 'Unknown error'));
+                }
+            });
+        }
     });
 
     // Delete button handler
