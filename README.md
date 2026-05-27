@@ -1,6 +1,6 @@
 # README
 
-> This is a project to support AP Computer Science Principles (APCSP) as well as a UC articulated Data Structures course. It was crafted iteratively starting in 2020 to the present time.  The primary purposes are ...
+> This is a project to support AP Computer Science Principles (APCSP) as well as a UC articulated Data Structures course. It was crafted iteratively starting in 2020 to the present time.  The primary focus is a backend service for the D.A.D. (Doing Exceptional Deeds) initiative.
 
 - Used as starter code for student projects for `AP CSP 1 and 2` and `Data Structures 1` curriculum.
 - Used to teach key principles in learning the Python Flask programming environment.
@@ -8,7 +8,18 @@
 - Contains a minimal frontend, mostly to support Administrative functionality using the `templates` folder and `Jinja2` to define UIs.
 - Contains SQL database code in the `model` folder to introduce concepts of persistent data and storage.  Perisistence folder is `instance/volumes` for generated SQLite3 db.
 - Contains capabilities for deployment and has been used with AWS, Ubuntu, Docker, docker-compose, and Nginx to `deploy a WSGI server`.
-- Contains APIs to support `user authentication and cookies`, a great deal of which was contributed by Aiden Wu a former student in CSP.  
+- Contains APIs to support `user authentication and cookies`, a great deal of which was contributed by Aiden Wu a former student in CSP.
+
+## About D.A.D. (Doing Exceptional Deeds)
+
+This backend powers the D.A.D. Portal - a platform for a 501(c)(3) nonprofit dedicated to promoting community service and exceptional deeds. The project enables:
+
+- **User Authentication & Management**: Secure login and role-based access control for users, teachers, and administrators
+- **Deed Tracking**: Social media-style microblog for tracking and celebrating deeds and community contributions
+- **Admin Dashboard**: Tools for managing users, submissions, and community engagement
+- **Data Persistence**: SQLite3 database for storing user profiles, deeds, and engagement metrics
+
+Learn more at: [doingexceptionaldeeds.org](https://www.doingexceptionaldeeds.org)
 
 ## Flask Portfolio Starter
 
@@ -164,6 +175,37 @@ pip install -r requirements.txt
 | POST | `/api/microblog/topics/auto-create` | Auto-create topic for page |
 | GET | `/api/microblog/topics?pagePath=X` | Get topic by page path |
 
+## D.A.D. Portal Features
+
+The D.A.D. Portal includes several key features implemented through this backend:
+
+### Authentication & User Management
+- Secure user registration and login system with JWT cookies
+- Role-based access control (Admin, Teacher, User)
+- User profile management with avatars and metadata
+- Session management with secure authentication
+
+### Social Microblog System
+- Create, read, update, and delete posts (deeds)
+- Reply to posts to encourage community dialogue
+- Reactions system (emojis) for peer recognition and engagement
+- Topic-based organization of deeds and community contributions
+- Search and filter capabilities for discovering deeds
+- Page-specific topic creation and organization
+
+### Admin Dashboard
+- User management interface for administrative control
+- Submission tracking and review tools
+- Community engagement metrics and analytics
+- Database administration and data management tools
+
+### Deployment & Scalability
+- Docker containerization for consistent deployments across environments
+- Nginx reverse proxy configuration with CORS support for cross-origin requests
+- AWS RDS database integration for production deployments
+- Environment-based configuration for local development and production modes
+- Support for multiple database backends (SQLite3 for local, RDS for production)
+
 ## Idea
 
 ### Files and Directories in this Project
@@ -182,7 +224,9 @@ The key files and directories in this project are in these online articles.
 
 - Work to make documentation materials useful.
 - Add gemini API's
-- Add microblog API's, social medai support
+- Add microblog API's, social media support
+- D.A.D. Portal branding and UI integration
+- Comprehensive D.A.D. Portal documentation
 
 #### July 2024
 
@@ -211,21 +255,21 @@ The key files and directories in this project are in these online articles.
 > Basic UI elements were implemented showing server side Flask with Jinja 2 capabilities.
 
 - The Project entry point is main.py, this enables the Flask Web App and provides the capability to render templates (HTML files)
-- The main.py is the  Web Server Gateway Interface, essentially it contains an HTTP route and HTML file relationship.  The Python code constructs WSGI relationships for index, kangaroos, walruses, and hawkers.
-- The project structure contains many directories and files.  The template directory (containing HTML files) and static directory (containing JS files) are common standards for HTML coding.  Static files can be pictures and videos, in this project they are mostly javascript backgrounds.
+- The main.py is the  Web Server Gateway Interface, essentially it contains an HTTP route and HTML file relationship.  The Python code constructs WSGI relationships for index, kangaroos, walruses, and[...]
+- The project structure contains many directories and files.  The template directory (containing HTML files) and static directory (containing JS files) are common standards for HTML coding.  Static fi[...]
 - WSGI templates: index.html, kangaroos.html, ... are aligned with routes in main.py.
-- Other templates support WSGI templates.  The base.html template contains common Head, Style, Body, and Script definitions.  WSGI templates often "include" or "extend" these templates.  This is a way to reuse code.
+- Other templates support WSGI templates.  The base.html template contains common Head, Style, Body, and Script definitions.  WSGI templates often "include" or "extend" these templates.  This is a way[...]
 - The VANTA javascript statics (backgrounds) are shown and defaulted in base.html (birds) but are block-replaced as needed in other templates (solar, net, ...)
-- The Bootstrap Navbar code is in navbar.html. The base.html code includes navbar.html.  The WSGI html files extend base.html files.  This is a process of management and correlation to optimize code management.  For instance, if the menu changes discovery of navbar.html is easy, one change reflects on all WSGI html files.
+- The Bootstrap Navbar code is in navbar.html. The base.html code includes navbar.html.  The WSGI html files extend base.html files.  This is a process of management and correlation to optimize code m[...]
 - Jinja2 variables usage is to isolate data and allow redefinitions of attributes in templates.  Observe "{% set variable = %}" syntax for definition and "{{ variable }}" for reference.
-- The base.html uses a combination of Bootstrap grid styling and custom CSS styling.  Grid styling in observation with the "<Col-3>" markers.  A Bootstrap Grid has a width of 12, thus four "Col-3" markers could fit on a Grid row.
-- A key purpose of this project is to embed links to other content.  The "href=" definition embeds hyperlinks into the rendered HTML.  The base.html file shows usage of "href={{github}}", the "{{github}}" is a Jinja2 variable.  Jinja2 variables are pre-processed by Python, a variable swap with value, before being sent to the browser.
+- The base.html uses a combination of Bootstrap grid styling and custom CSS styling.  Grid styling in observation with the "<Col-3>" markers.  A Bootstrap Grid has a width of 12, thus four "Col-3" mar[...]
+- A key purpose of this project is to embed links to other content.  The "href=" definition embeds hyperlinks into the rendered HTML.  The base.html file shows usage of "href={{github}}", the "{{githu[...]
 
 ## Database Management Workflow with Scripts
 
-If you are working with the database, follow the below procedure to safely interact with the remote DB while applying changes locally. Certain scripts require flask to be running while others don't, so follow the instructions that the scripts provide.
+If you are working with the database, follow the below procedure to safely interact with the remote DB while applying changes locally. Certain scripts require flask to be running while others don't, s[...]
 
-Note, steps 1,2,3,5 are on your development (LOCAL) server. You need to update your .env on development server and be sure all PRs are completed, pulled, and tested before you start pushing to production.
+Note, steps 1,2,3,5 are on your development (LOCAL) server. You need to update your .env on development server and be sure all PRs are completed, pulled, and tested before you start pushing to product[...]
 
 0. Be sure ADMIN_PASSWORD is set in .env.  You will need a venv for the python scripts.
 
@@ -241,9 +285,9 @@ Note, steps 1,2,3,5 are on your development (LOCAL) server. You need to update y
 
 3. TEST TEST TEST! Make sure your changes work correctly with the local DB.
 
-4. Now go onto the remote DB and back up the db using `cp sqlite.db backups/sqlite_year-month-day.db` in the volumes directory of the flask directory on cockpit. Then, run `git pull` to ensure that flask has been updated with the latest code. Then, run `python scripts/db_init.py` again to ensure that the remote DB schema is up to date with the latest code.
+4. Now go onto the remote DB and back up the db using `cp sqlite.db backups/sqlite_year-month-day.db` in the volumes directory of the flask directory on cockpit. Then, run `git pull` to ensure that fl[...]
 
-5. Once you are satisfied with your changes, push the local DB content to the remote DB. This requires authentication, so you need to replace the ADMIN_PASSWORD in the .env file of "flask" with the production admin password.
+5. Once you are satisfied with your changes, push the local DB content to the remote DB. This requires authentication, so you need to replace the ADMIN_PASSWORD in the .env file of "flask" with the pr[...]
    ```bash
    python scripts/db_restore-sqlite2prod.py
    ```
