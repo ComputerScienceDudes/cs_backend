@@ -45,7 +45,7 @@ Empty = (FirstChar == "" or FirstChar == -1)
 if Empty:
     Survey_File.close()
     Survey_File = open("Survey.json", "w")
-    Structure = {"Header": {"Name": "The Survey", "Entries": 0}, "Data": []}
+    Structure = {"Header": {"Name": "Survey", "Entries": 0}, "Data": []}
     json.dump(Structure, Survey_File, indent=4)
 Survey_File.close()
 
