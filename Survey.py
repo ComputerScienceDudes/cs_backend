@@ -4,9 +4,8 @@ import json
 import time
 
 class Survey_Entry:
-    def __init__(self, Name, Password, Age, Grade, Wants_College, Wants_Job):
+    def __init__(self, Name, Age, Grade, Wants_College, Wants_Job):
         self.Name = Name
-        self.Password = Password
         self.Age = Age
         self.Grade = Grade
         self.Wants_College = Wants_College
@@ -27,8 +26,6 @@ def BoolFromString(string):
 def Get_Entry(Entry):
     ClearConsole()
     Entry.Name = input("Enter your name: ") 
-    ClearConsole()
-    Entry.Password = input("Enter your password: ")
     ClearConsole()
     Entry.Age = input("Enter your age: ")
     ClearConsole()
@@ -65,7 +62,7 @@ while True:
         exit()
 
     # Take survey
-    Log = Survey_Entry("", "", "", "", False, False)
+    Log = Survey_Entry("", "", "", False, False)
     Get_Entry(Log)
 
     json_data["Data"].append(Log.__dict__)

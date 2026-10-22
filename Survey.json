@@ -1,0 +1,15 @@
+{
+    "Header": {
+        "Name": "The Survey",
+        "Entries": 1
+    },
+    "Data": [
+        {
+            "Name": "Bob",
+            "Age": "3",
+            "Grade": "2",
+            "Wants_College": true,
+            "Wants_Job": true
+        }
+    ]
+}
