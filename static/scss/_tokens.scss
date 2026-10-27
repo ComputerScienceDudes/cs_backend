@@ -1,0 +1,9 @@
+$accent: #1b4332;
+$text: #2c2c2c;
+$surface: #fff;
+$border: #d1e7da;
+$muted: #526359;
+$space: .5rem;
+$radius: .75rem;
+@mixin focus-ring { outline: 3px solid #287b58; outline-offset: 3px; }
+@mixin panel { background: $surface; border: 1px solid $border; border-radius: $radius; padding: $space * 3; }

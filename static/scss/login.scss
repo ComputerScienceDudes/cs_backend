@@ -1,0 +1,133 @@
+@import "tokens";
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, $accent 0%, #0d2b1f 100%);
+  font-family: 'Space Grotesk', 'Segoe UI', sans-serif;
+}
+
+.login-container {
+  width: 100%;
+  max-width: 420px;
+  padding: 2rem;
+}
+
+.login-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+  padding: 2.75rem 2.25rem;
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.login-header img {
+  width: 72px;
+  height: 72px;
+  margin-bottom: 0.75rem;
+  border-radius: 50%;
+  border: 3px solid $accent;
+}
+
+.login-header h1 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: $accent;
+  margin: 0 0 0.25rem;
+  letter-spacing: -0.5px;
+}
+
+.login-header p {
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.form-group label {
+  font-weight: 600;
+  color: $accent;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.form-group input[type="text"],
+.form-group input[type="password"] {
+  padding: 0.75rem 1rem;
+  border: 2px solid $border;
+  border-radius: 8px;
+  font-size: 1rem;
+  color: #1a1a1a;
+  background: #f9fafb;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+}
+
+.form-group input:focus {
+  border-color: $accent;
+  box-shadow: 0 0 0 3px rgba(27, 67, 50, 0.12);
+  background: #fff;
+}
+
+.alert-error {
+  background: #fff3f0;
+  color: #c0392b;
+  padding: 0.85rem 1rem;
+  border-radius: 8px;
+  border-left: 4px solid #e74c3c;
+  font-size: 0.9rem;
+}
+
+.submit-btn {
+  background: #FF6B35;
+  color: #fff;
+  padding: 0.9rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+  margin-top: 0.25rem;
+}
+
+.submit-btn:hover {
+  background: #e55a25;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+}
+
+.submit-btn:active { transform: translateY(0); }
+
+.login-footer {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 0.82rem;
+  color: #9ca3af;
+}
+
+.login-footer a {
+  color: $accent;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.hidden-input { display: none; }

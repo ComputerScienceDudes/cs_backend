@@ -1,0 +1,76 @@
+@import "tokens";
+
+// Shared OCS grammar adapted to the Flask application and DAD palette.
+.ocs__container { width: 100%; max-width: 90rem; margin-right: auto; margin-left: auto; min-width: 0; }
+.ocs__card, .ocs_card { @include panel; }
+.ocs__grid {
+  display: grid; gap: $space * 3;
+  &--card { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+  &--standard { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  &.cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  &.cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  &-cell { min-width: 0; overflow-wrap: anywhere; }
+  &-cell--header { grid-column: 1 / -1; }
+  &-cell--accent { border-color: $accent; }
+}
+.ocs__links { display: flex; flex-wrap: wrap; align-items: center; gap: $space * 3; }
+.ocs_section-title { font-size: 1.25rem; font-weight: 700; line-height: 1.3; margin-bottom: 1rem; }
+.ocs_description, .stat-card .stat-card-subtitle { color: $muted; font-size: .95rem; }
+.ocs_lead { font-size: 1.125rem; line-height: 1.6; }
+h1, h2, h3 { overflow-wrap: anywhere; }
+.ocs__btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: $space;
+  min-height: 44px; padding: .65rem 1.1rem; border-radius: $radius;
+  border: 1px solid $accent; font: inherit; font-weight: 600; cursor: pointer;
+  text-decoration: none; transition: background-color .15s ease;
+  &.fill { background: $accent; color: $surface; }
+  &.outline, &.btn-cancel { background: $surface; color: $accent; }
+  &.alert-red, &.btn-delete, &.btn-danger { background: #a52b2b; border-color: #a52b2b; color: $surface; }
+  &:hover { filter: brightness(.92); }
+  &:focus-visible { @include focus-ring; }
+  &:disabled { opacity: .55; cursor: not-allowed; filter: none; }
+}
+// Specificity also covers the legacy form selectors during migration.
+.ocs__input, .form-group input.ocs__input {
+  width: 100%; min-width: 0; min-height: 44px; padding: .7rem .9rem;
+  border: 1px solid #879e91; border-radius: $radius; background: $surface;
+  color: $text; font: inherit;
+  &:focus { @include focus-ring; border-color: $accent; box-shadow: none; }
+  &[aria-invalid="true"] { border-color: #a52b2b; }
+  &:disabled { background: #edf1ee; cursor: not-allowed; }
+}
+textarea.ocs__input { min-height: 8rem; resize: vertical; }
+.ocs__toggle {
+  display: inline-flex; position: relative; align-items: center; gap: .65rem;
+  min-height: 44px; cursor: pointer; color: $text;
+  &-input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+  &-track {
+    position: relative; display: inline-block; flex-shrink: 0; width: 44px; height: 26px;
+    background: #65766d; border-radius: 100px; transition: background .15s ease;
+    &::before { content: ''; position: absolute; width: 20px; height: 20px; top: 3px; left: 3px; background: $surface; border-radius: 50%; transition: transform .15s ease; }
+  }
+  &-input:checked + &-track { background: $accent; &::before { transform: translateX(18px); } }
+  &-input:focus-visible + &-track { @include focus-ring; }
+}
+.compact-cards .stat-card { padding: 1rem; .stat-card-icon { display: none; } }
+.reduce-motion *, .reduce-motion *::before { animation: none !important; transition: none !important; }
+.sidebar-menu { padding-left: 0; }
+.top-bar, .welcome-section, .user-profile { flex-wrap: wrap; gap: 1rem; }
+.top-bar-title { margin: 0; }
+.stat-card .stat-card-title { color: $muted; }
+.ocs__table-wrap, .table-responsive { overflow-x: auto; }
+@media (max-width: 576px) {
+  .sidebar { position: static; width: 100%; height: auto; padding: .5rem; }
+  .sidebar-brand { display: none; }
+  .sidebar-menu { display: flex; flex-wrap: wrap; margin: 0; }
+  .sidebar-menu a { padding: .65rem; font-size: .85rem; }
+  .sidebar-menu a span { display: inline; }
+  .sidebar-menu a i { margin-right: .4rem; }
+  .main-container { margin-left: 0; }
+  .ocs__grid.ocs__grid--card, .ocs__grid.ocs__grid--standard { grid-template-columns: 1fr; }
+  .login-container { padding: 1rem; }
+  .login-card { padding: 1.5rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
