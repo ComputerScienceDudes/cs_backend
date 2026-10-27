@@ -2,230 +2,7 @@
 {% set project = "Home" %}
 
 {% block style %}
-    <style>
-        .dashboard-container {
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
-        }
-
-        .welcome-section {
-            margin-bottom: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-        }
-
-        .welcome-header h1 {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--dark-text);
-            margin-bottom: 0.5rem;
-        }
-
-        .welcome-header p {
-            font-size: 1.1rem;
-            color: #666;
-            margin: 0;
-        }
-
-        .refresh-btn {
-            background-color: var(--soft-red);
-            color: var(--light-text);
-            border: none;
-            padding: 0.7rem 1.2rem;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .refresh-btn:hover {
-            background-color: var(--hover-red);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(200, 86, 86, 0.3);
-        }
-
-        .refresh-btn:active {
-            transform: translateY(0);
-        }
-
-        .refresh-btn.loading {
-            opacity: 0.7;
-            pointer-events: none;
-        }
-
-        .refresh-btn i {
-            transition: transform 0.6s ease;
-        }
-
-        .refresh-btn.loading i {
-            transform: rotate(360deg);
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .stat-card {
-            background: var(--light-text);
-            border-radius: 12px;
-            padding: 2rem 1.5rem;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s ease;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-            border-color: var(--soft-red);
-        }
-
-        .stat-card-header {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .stat-card-icon {
-            font-size: 2rem;
-            color: var(--soft-red);
-            width: 50px;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: rgba(200, 86, 86, 0.1);
-            border-radius: 10px;
-        }
-
-        .stat-card-title {
-            font-size: 0.95rem;
-            font-weight: 600;
-            color: #999;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin: 0;
-        }
-
-        .stat-card-value {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--dark-text);
-            margin: 0.5rem 0 0 0;
-            font-variant-numeric: tabular-nums;
-        }
-
-        .stat-card-subtitle {
-            font-size: 0.85rem;
-            color: #999;
-            margin-top: 0.5rem;
-        }
-
-        .status-indicator {
-            display: inline-block;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background-color: #4caf50;
-            margin-right: 0.5rem;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.5;
-            }
-        }
-
-        .info-section {
-            background: var(--light-text);
-            border-radius: 12px;
-            padding: 2rem;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-        }
-
-        .info-section h2 {
-            font-size: 1.3rem;
-            font-weight: 600;
-            color: var(--dark-text);
-            margin-top: 0;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .info-section h2 i {
-            color: var(--soft-red);
-        }
-
-        .info-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .info-list li {
-            padding: 0.75rem 0;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .info-list li:last-child {
-            border-bottom: none;
-        }
-
-        .info-label {
-            color: #666;
-            font-weight: 500;
-        }
-
-        .info-value {
-            color: var(--dark-text);
-            font-weight: 600;
-            text-align: right;
-        }
-
-        .loading {
-            text-align: center;
-            color: #999;
-            padding: 2rem;
-        }
-
-        .error-message {
-            background-color: #FDE8E8;
-            color: var(--soft-red);
-            padding: 1.5rem;
-            border-radius: 8px;
-            border-left: 4px solid var(--soft-red);
-            margin-bottom: 2rem;
-        }
-
-        .success-badge {
-            display: inline-block;
-            background-color: rgba(76, 175, 80, 0.1);
-            color: #4caf50;
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
 {% endblock %}
 
 {% block body %}
@@ -233,20 +10,43 @@
         <div class="welcome-section">
             <div class="welcome-header">
                 <h1>Dashboard</h1>
-                <p>System overview and statistics</p>
+                <p class="ocs_lead">System overview and statistics</p>
             </div>
-            <button id="refreshBtn" class="refresh-btn" title="Refresh statistics">
+            <button id="refreshBtn" class="ocs__btn fill refresh-btn" title="Refresh statistics">
                 <i class="fas fa-sync-alt"></i>
                 <span>Refresh</span>
             </button>
         </div>
 
-        <div id="stats-container" class="loading">
+        <section class="ocs__card" aria-labelledby="display-title">
+            <h2 id="display-title" class="ocs_section-title">Dashboard display</h2>
+            <div class="ocs__links">
+                <label class="ocs__toggle ocs__toggle--green"><input type="checkbox" class="ocs__toggle-input" id="display-details" checked><span class="ocs__toggle-track" aria-hidden="true"></span><span class="ocs__toggle-label">Show system information</span></label>
+                <label class="ocs__toggle ocs__toggle--green"><input type="checkbox" class="ocs__toggle-input" id="display-compact" ><span class="ocs__toggle-track" aria-hidden="true"></span><span class="ocs__toggle-label">Compact cards</span></label>
+                <label class="ocs__toggle ocs__toggle--green"><input type="checkbox" class="ocs__toggle-input" id="display-motion" ><span class="ocs__toggle-track" aria-hidden="true"></span><span class="ocs__toggle-label">Reduce motion</span></label>
+            </div>
+            <p id="display-count" class="ocs_description" aria-live="polite"></p>
+        </section>
+        <div id="stats-container" aria-live="polite" class="loading">
             <p>Loading statistics...</p>
         </div>
     </div>
 
     <script>
+        // Checkbox state controls real display features, including asynchronously loaded content.
+        function applyDisplayPreferences() {
+            const details = document.getElementById('display-details');
+            const info = document.getElementById('system-information');
+            if (info) info.hidden = !details.checked;
+            document.body.classList.toggle('compact-cards', document.getElementById('display-compact').checked);
+            document.body.classList.toggle('reduce-motion', document.getElementById('display-motion').checked);
+            const enabled = document.querySelectorAll('.ocs__toggle-input:checked').length;
+            document.getElementById('display-count').textContent = `${enabled} of 3 display options enabled`;
+        }
+        // Keep the OS motion preference as the initial value, while allowing a page override.
+        document.getElementById('display-motion').checked = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        document.querySelectorAll('.ocs__toggle-input').forEach(input => input.addEventListener('change', applyDisplayPreferences));
+        applyDisplayPreferences();
         // Fetch and display dashboard statistics
         async function loadDashboardStats() {
             try {
@@ -260,56 +60,56 @@
                 if (result.status === 'success') {
                     const data = result.data;
                     const statsHTML = `
-                        <div class="stats-grid">
-                            <div class="stat-card">
+                        <div class="ocs__grid ocs__grid--card">
+                            <div class="stat-card ocs__grid-cell">
                                 <div class="stat-card-header">
                                     <div class="stat-card-icon">
                                         <i class="fas fa-users"></i>
                                     </div>
                                 </div>
-                                <h3 class="stat-card-title">Total Users</h3>
+                                <h2 class="stat-card-title ocs_section-title">Total Users</h2>
                                 <p class="stat-card-value">${data.total_users}</p>
-                                <p class="stat-card-subtitle">${data.admin_users} admins</p>
+                                <p class="stat-card-subtitle ocs_description">${data.admin_users} admins</p>
                             </div>
 
-                            <div class="stat-card">
+                            <div class="stat-card ocs__grid-cell">
                                 <div class="stat-card-header">
                                     <div class="stat-card-icon">
                                         <i class="fas fa-file-upload"></i>
                                     </div>
                                 </div>
-                                <h3 class="stat-card-title">Submissions</h3>
+                                <h2 class="stat-card-title ocs_section-title">Submissions</h2>
                                 <p class="stat-card-value">${data.total_submissions}</p>
-                                <p class="stat-card-subtitle">All time</p>
+                                <p class="stat-card-subtitle ocs_description">All time</p>
                             </div>
 
-                            <div class="stat-card">
+                            <div class="stat-card ocs__grid-cell">
                                 <div class="stat-card-header">
                                     <div class="stat-card-icon">
                                         <i class="fas fa-database"></i>
                                     </div>
                                 </div>
-                                <h3 class="stat-card-title">Data Used</h3>
+                                <h2 class="stat-card-title ocs_section-title">Data Used</h2>
                                 <p class="stat-card-value">${data.database_size_mb}</p>
-                                <p class="stat-card-subtitle">MB</p>
+                                <p class="stat-card-subtitle ocs_description">MB</p>
                             </div>
 
-                            <div class="stat-card">
+                            <div class="stat-card ocs__grid-cell">
                                 <div class="stat-card-header">
                                     <div class="stat-card-icon">
                                         <i class="fas fa-server"></i>
                                     </div>
                                 </div>
-                                <h3 class="stat-card-title">System Status</h3>
+                                <h2 class="stat-card-title ocs_section-title">System Status</h2>
                                 <p class="stat-card-value">
                                     <span class="status-indicator"></span>
                                     <span class="success-badge">${data.system_status}</span>
                                 </p>
-                                <p class="stat-card-subtitle">All systems operational</p>
+                                <p class="stat-card-subtitle ocs_description">All systems operational</p>
                             </div>
                         </div>
 
-                        <div class="info-section">
+                        <div class="info-section ocs__card" id="system-information">
                             <h2><i class="fas fa-info-circle"></i> System Information</h2>
                             <ul class="info-list">
                                 <li>
@@ -328,7 +128,9 @@
                         </div>
                     `;
                     
+                    document.getElementById('stats-container').classList.remove('loading');
                     document.getElementById('stats-container').innerHTML = statsHTML;
+                    applyDisplayPreferences();
                 } else {
                     throw new Error(result.message || 'Failed to load statistics');
                 }
@@ -347,9 +149,11 @@
             const refreshBtn = document.getElementById('refreshBtn');
             if (refreshBtn) {
                 refreshBtn.addEventListener('click', async function() {
-                    this.classList.add('loading');
+                    this.disabled = true;
+                    this.setAttribute('aria-busy', 'true');
                     await loadDashboardStats();
-                    this.classList.remove('loading');
+                    this.disabled = false;
+                    this.removeAttribute('aria-busy');
                 });
             }
         }

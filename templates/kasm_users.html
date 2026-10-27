@@ -28,7 +28,7 @@
                    <td>{{ user.last_session or "N/A" }}</td>
                    <td>
                        <!-- Trash can icon -->
-                       <button class="btn btn-danger btn-sm delete-user-btn">
+                       <button class="ocs__btn fill btn btn-danger btn-sm delete-user-btn">
                            <i class="fas fa-trash-alt"></i>
                        </button>
                    </td>
@@ -97,50 +97,7 @@
 
 
   
-<style>
-   #userTable {
-       background-color: #fff;
-       color: #000;
-   }
-
-
-   #userTable th, #userTable td {
-       text-align: center;
-       vertical-align: middle;
-   }
-
-
-   #userTable thead {
-       background-color: #343a40;
-       color: #fff;
-   }
-
-
-   #userTable tbody tr:hover {
-       background-color: #f1f1f1;
-   }
-
-
-   .alert-info {
-       background-color: #d1ecf1;
-       color: #0c5460;
-       border-color: #bee5eb;
-   }
-
-
-   .container {
-       padding: 20px;
-   }
-
-   
-   .btn-danger i {
-    font-size: 20px; /* Adjust the size of the trash icon */
-    color: white;
-}
-
-
-
-</style>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/kasm_users.css') }}">
 {% endblock %}
 
 

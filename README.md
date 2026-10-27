@@ -307,3 +307,28 @@ Note, steps 1,2,3,5 are on your development (LOCAL) server. You need to update y
    - Update schema: `python scripts/db_init.py`
 
 5. Push local changes to production: `python scripts/db_restore-sqlite2prod.py` (Requires admin password from production in .env)
+
+## Interface styling (Sass lessons)
+
+The Flask interface implements the seven OCS lessons while retaining the DAD palette.
+Compiled CSS is committed in `static/css`, so normal Flask startup needs no Node or Sass runtime.
+Edit `static/scss`, then run `sh scripts/build_styles.sh` with a Sass CLI installed.
+The build supports Dart Sass and the existing Ruby Sass CLI. Do not edit generated CSS directly.
+
+| Lesson | Application |
+| --- | --- |
+| [CSS to Sass](https://pages.opencodingsociety.com/topics/view/sass/guide/?category=sass) | Template style blocks moved to page SCSS; `_tokens.scss` shares colors, spacing, and mixins. |
+| [Grids](https://pages.opencodingsociety.com/topics/view/sass/grids/?category=sass) | Dashboard uses `ocs__grid ocs__grid--card` with a cell per statistic and a single column on phones. |
+| [Containers](https://pages.opencodingsociety.com/topics/view/navigation/sass/containers/lesson/?category=sass) | Shared `ocs__container` bounds authenticated content; dashboard settings and system information use cards. |
+| [Buttons](https://pages.opencodingsociety.com/topics/view/sass/buttons-grammar1/?category=sass) | Shared `ocs__btn` roles with filled, outline, destructive, disabled, and keyboard focus states. |
+| [Inputs](https://pages.opencodingsociety.com/topics/view/sass/inputs/?category=sass) | Text fields, selects, and textareas use `ocs__input medium`; deed form labels are associated with fields. |
+| [Toggles](https://pages.opencodingsociety.com/topics/view/sass/toggles/?category=sass) | Three labeled dashboard switches show system information, compact cards, and reduce motion; enabled count updates live. |
+| [Typography](https://pages.opencodingsociety.com/topics/view/sass/typography/?category=sass) | Semantic dashboard heading hierarchy, OCS lead/description roles, and valid navigation list markup. |
+
+`components.scss` supplies the OCS grammar locally because Flask does not load the lessons' Jekyll theme.
+Page SCSS preserves existing component styling; shared components load after it. Dashboard display
+options apply to the current page and are reapplied when statistics refresh. System reduced-motion
+preferences remain respected regardless of the checkbox. Existing API routes and authentication are unchanged.
+
+Manual smoke check: open the dashboard at desktop and phone widths; tab through controls; flip each
+switch and refresh statistics; verify login, user management, and deed creation controls remain usable.

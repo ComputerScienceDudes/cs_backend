@@ -29,10 +29,10 @@
                 <td>{{ persona._bio_map.archetype|join(', ') if persona._bio_map and persona._bio_map.archetype else '' }}</td>
                 <td>{{ persona._bio_map.personality_type|join(', ') if persona._bio_map and persona._bio_map.personality_type else '' }}</td>
                 <td>
-                    <button class="btn btn-info btn-sm view-btn" data-id="{{ persona.id }}">View</button>
-                    <button class="btn btn-primary btn-sm edit-btn" data-id="{{ persona.id }}">Edit</button>
+                    <button class="ocs__btn fill btn btn-info btn-sm view-btn" data-id="{{ persona.id }}">View</button>
+                    <button class="ocs__btn fill btn btn-primary btn-sm edit-btn" data-id="{{ persona.id }}">Edit</button>
                     {% if current_user.role == 'Admin' %}
-                    <button class="btn btn-danger btn-sm delete-btn" data-id="{{ persona.id }}">Delete</button>
+                    <button class="ocs__btn fill btn btn-danger btn-sm delete-btn" data-id="{{ persona.id }}">Delete</button>
                     {% endif %}
                 </td>
             </tr>
@@ -42,7 +42,7 @@
 
     <!-- Add New Persona Button -->
     {% if current_user.role == 'Admin' %}
-    <button class="btn btn-success" id="addPersonaBtn">Add New Persona</button>
+    <button class="ocs__btn fill btn btn-success" id="addPersonaBtn">Add New Persona</button>
     {% endif %}
 </div>
 
@@ -52,7 +52,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="personaModalLabel">Persona Details</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="ocs__btn fill close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -63,12 +63,12 @@
                     
                     <div class="form-group">
                         <label for="personaAlias">Alias</label>
-                        <input type="text" class="form-control" id="personaAlias" required>
+                        <input type="text" class="ocs__input medium form-control" id="personaAlias" required>
                     </div>
                     
                     <div class="form-group">
                         <label for="personaCategory">Category</label>
-                        <select class="form-control" id="personaCategory" required>
+                        <select class="ocs__input medium form-control" id="personaCategory" required>
                             <option value="student">Student</option>
                             <option value="social">Social</option>
                             <option value="achievement">Achievement</option>
@@ -78,22 +78,22 @@
                     
                     <div class="form-group">
                         <label for="personaTitle">Title</label>
-                        <input type="text" class="form-control" id="personaTitle" required>
+                        <input type="text" class="ocs__input medium form-control" id="personaTitle" required>
                     </div>
                     
                     <div class="form-group">
                         <label for="personaDescription">Description</label>
-                        <textarea class="form-control" id="personaDescription" rows="4" required></textarea>
+                        <textarea class="ocs__input medium form-control" id="personaDescription" rows="4" required></textarea>
                     </div>
                     
                     <div class="form-group">
                         <label for="personaArchetype">Archetype (comma-separated)</label>
-                        <input type="text" class="form-control" id="personaArchetype" placeholder="e.g. Introvert, Analytical, Independent">
+                        <input type="text" class="ocs__input medium form-control" id="personaArchetype" placeholder="e.g. Introvert, Analytical, Independent">
                     </div>
                     
                     <div class="form-group">
                         <label for="personaPersonalityType">Personality Type (comma-separated)</label>
-                        <input type="text" class="form-control" id="personaPersonalityType" placeholder="e.g. Ambitious, Focused">
+                        <input type="text" class="ocs__input medium form-control" id="personaPersonalityType" placeholder="e.g. Ambitious, Focused">
                     </div>
                     
                     <hr>
@@ -101,41 +101,34 @@
                     
                     <div class="form-group">
                         <label for="personaSays">Says (one per line)</label>
-                        <textarea class="form-control" id="personaSays" rows="3"></textarea>
+                        <textarea class="ocs__input medium form-control" id="personaSays" rows="3"></textarea>
                     </div>
                     
                     <div class="form-group">
                         <label for="personaThinks">Thinks (one per line)</label>
-                        <textarea class="form-control" id="personaThinks" rows="3"></textarea>
+                        <textarea class="ocs__input medium form-control" id="personaThinks" rows="3"></textarea>
                     </div>
                     
                     <div class="form-group">
                         <label for="personaFeels">Feels (one per line)</label>
-                        <textarea class="form-control" id="personaFeels" rows="3"></textarea>
+                        <textarea class="ocs__input medium form-control" id="personaFeels" rows="3"></textarea>
                     </div>
                     
                     <div class="form-group">
                         <label for="personaDoes">Does (one per line)</label>
-                        <textarea class="form-control" id="personaDoes" rows="3"></textarea>
+                        <textarea class="ocs__input medium form-control" id="personaDoes" rows="3"></textarea>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="savePersonaBtn" style="display:none;">Save Changes</button>
+                <button type="button" class="ocs__btn fill btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="ocs__btn fill btn btn-primary" id="savePersonaBtn" style="display:none;">Save Changes</button>
             </div>
         </div>
     </div>
 </div>
 
-<style>
-    .description-cell {
-        max-width: 300px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-</style>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/persona.css') }}">
 
 <script>
     $(document).ready(function () {
